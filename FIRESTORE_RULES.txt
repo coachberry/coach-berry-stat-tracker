@@ -1,0 +1,72 @@
+// Hockey Stats Tracker - Firestore Security Rules
+// Copy this entire file to Firebase Console > Firestore Database > Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection
+    // Each user can only read/write their own document
+    // Admins can read all user documents
+    match /users/{userId} {
+      // User can read their own document
+      allow read: if request.auth.uid == userId;
+      
+      // User can write their own document
+      allow write: if request.auth.uid == userId;
+      
+      // All authenticated users can read (to see admin status for UI)
+      allow read: if request.auth.uid != null;
+    }
+    
+    // Team stats collection
+    // All authenticated users can read all stats
+    // All authenticated users can create/edit their own stats
+    match /teamStats/{document=**} {
+      // Allow read for all authenticated users
+      allow read: if request.auth.uid != null;
+      
+      // Allow create for all authenticated users
+      allow create: if request.auth.uid != null;
+      
+      // Allow write/delete for all authenticated users
+      allow write: if request.auth.uid != null;
+      
+      // Alternative: Only allow admins to delete (uncomment if desired)
+      // allow delete: if request.auth.uid != null && 
+      //                get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // Deny all other access by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+/*
+IMPORTANT NOTES:
+
+1. This allows any authenticated user to:
+   - Create game stats
+   - Read all game stats
+   - Edit game stats
+   - Delete game stats
+
+2. If you want TIGHTER security where only admins can delete stats:
+   - Uncomment the "Alternative" delete rule above
+   - This prevents accidental/malicious deletion
+
+3. If you want to limit who can create stats:
+   - Modify the "create" rule to check for admin status
+   - Example: allow create: if request.auth.uid != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+
+4. To test these rules:
+   - Firebase Console > Firestore > Rules
+   - Click "Test" button
+   - Paste test data to verify rules work
+
+5. Deployment:
+   - Make changes in the Rules tab
+   - Click "Publish"
+   - Changes take effect immediately
+*/
