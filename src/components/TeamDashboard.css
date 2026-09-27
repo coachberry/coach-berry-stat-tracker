@@ -1,0 +1,53 @@
+.team-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dashboard-nav {
+  background: #1a1a1a;
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #333333;
+  margin-bottom: 30px;
+}
+
+.dashboard-nav button {
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  color: #cccccc;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+}
+
+.dashboard-nav button:hover {
+  background: rgba(255, 36, 0, 0.1);
+  color: #ffffff;
+}
+
+.dashboard-nav button.active {
+  border-bottom-color: #FF2400;
+  background: rgba(255, 36, 0, 0.15);
+  color: #FF2400;
+}
+
+.dashboard-content {
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-nav {
+    gap: 0;
+  }
+
+  .dashboard-nav button {
+    padding: 12px;
+    font-size: 12px;
+  }
+}
